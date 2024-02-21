@@ -6,13 +6,35 @@ document.getElementById("status").addEventListener("click", e => getStatus(e));
 document.getElementById("submit").addEventListener("click", e => postForm(e));
 
 
+
+/* Make a comma separated list
+There is an issue, and we can check it when adding the loop 
+to the console under postForm function, that it returns many values and 
+not an array */
+function processOptions(form) {
+    let optArray = [];
+
+    for (let e of form.entries()) {
+        if (e[0] === "options") {
+            optArray.push(e[1]);
+        }
+    }
+
+    form.delete("options");
+
+    form.append("options", optArray.join());
+
+    return form;
+}
+
+
 /* This gets the texts from forms and sends to API.
 If want to check before sending can use:  
 for (let e of form.entries()) {console.log(e); }
 */
 async function postForm(e) {
 
-    const form = new FormData(document.getElementById("checksform"));
+    const form = processOptions(new FormData(document.getElementById("checksform")));
 
     const response = await fetch(API_URL, {
         method: "POST",
