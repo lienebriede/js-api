@@ -49,6 +49,7 @@ async function postForm(e) {
     if (response.ok) {
         displayErrors(data);
     } else {
+        displayException(data);
         throw new Error(data.error);
     }
 }
@@ -66,14 +67,17 @@ async function getStatus(e) {
     const data = await response.json();
     /* If want to display in console.log only expiry date, then add
     console.log(data.expiry) instead of data
-    Here in dusplay function later it has been added {data.expiry} */
+    Here in display function later it has been added {data.expiry} */
     if (response.ok) {
         displayStatus(data);
     } else {
+        displayException(data);
         throw new Error(data.error);
     }
 
 }
+
+
 
 function displayErrors(data) {
 
@@ -97,8 +101,7 @@ function displayErrors(data) {
 
 function displayStatus(data) {
 
-    /*
-    In this way it makes also the sentence in two pieces:
+    /* This works nicer:
     
     let heading = "API Key Status";
     let results = `<div>Your key is valid until</div>`;
@@ -115,4 +118,17 @@ function displayStatus(data) {
     resultsModal.show();
 }
 
+/* This displays errors that before we saw only in the console
+Dont forget to put data. before error etc.
+*/
+function displayException(data) {
 
+    let heading = "An Exception Occured";
+    let results = `<div>The API returned status code ${data.status_code}</div>`;
+    results += `<div>Error number: <strong>${data.error_no}</strong></div>`;
+    results += `<div>Error text: <strong>${data.error}</strong></div>`;
+
+    document.getElementById("resultsModalTitle").innerText = heading;
+    document.getElementById("results-content").innerHTML = results;
+    resultsModal.show();
+}
